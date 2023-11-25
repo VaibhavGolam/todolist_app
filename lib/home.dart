@@ -25,8 +25,6 @@ class _HomeState extends State<Home> {
   Future<ThemeData> _loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
     final brightnessIndex = prefs.getInt('themeBrightness');
-    // Retrieve other saved theme attributes here
-    // Example: Retrieve primaryColor, accentColor, etc.
 
     // Assuming default theme is dark mode
     final brightness = brightnessIndex != null
@@ -36,8 +34,6 @@ class _HomeState extends State<Home> {
     // Return ThemeData based on retrieved attributes or defaults
     return ThemeData(
       brightness: brightness,
-      // Set other retrieved attributes or default values here
-      // Example: Set primaryColor, accentColor, etc.
     );
   }
 
