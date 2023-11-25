@@ -20,6 +20,27 @@ class _HomeState extends State<Home> {
 
 //darkmode button function
   ThemeData _currentTheme = ThemeData.dark(useMaterial3: true);
+
+// Load ThemeData
+  Future<ThemeData> _loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final brightnessIndex = prefs.getInt('themeBrightness');
+    // Retrieve other saved theme attributes here
+    // Example: Retrieve primaryColor, accentColor, etc.
+
+    // Assuming default theme is dark mode
+    final brightness = brightnessIndex != null
+        ? Brightness.values[brightnessIndex]
+        : Brightness.dark;
+
+    // Return ThemeData based on retrieved attributes or defaults
+    return ThemeData(
+      brightness: brightness,
+      // Set other retrieved attributes or default values here
+      // Example: Set primaryColor, accentColor, etc.
+    );
+  }
+
   void thememode() {
     setState(
       () {
@@ -28,6 +49,7 @@ class _HomeState extends State<Home> {
         } else {
           _currentTheme = ThemeData.dark(useMaterial3: true);
         }
+        _saveThemeMode(_currentTheme);
       },
     );
   }
@@ -35,11 +57,30 @@ class _HomeState extends State<Home> {
 //always shows the list
   @override
   void initState() {
+    //loads theme
+    _loadThemeMode().then((savedTheme) {
+      setState(() {
+        _currentTheme = savedTheme;
+      });
+    });
+
+    //todo list is visble in instead of seach
     _foundToDo = todosList;
+
+    //calls the saved data on localstorage
     _getSavedTodos();
     super.initState();
   }
 
+//save themData
+  Future<void> _saveThemeMode(ThemeData theme) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeBrightness', theme.brightness.index);
+    // Add other theme attributes that you want to save here
+    // Example: Save primaryColor, accentColor, etc.
+  }
+
+//store todos in local storage
   Future<void> _getSavedTodos() async {
     final prefs = await SharedPreferences.getInstance();
     final encodedTodos = prefs.getString('todos');
@@ -153,6 +194,17 @@ class _HomeState extends State<Home> {
           ),
 
           actions: <Widget>[
+            //close button
+            TextButton(
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: dBlue),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
             //addbutton
             ElevatedButton(
               child: const Text(
@@ -161,17 +213,6 @@ class _HomeState extends State<Home> {
               ),
               onPressed: () {
                 _addtoddoItem(_todoController.text);
-                Navigator.of(context).pop();
-              },
-            ),
-
-            //close button
-            TextButton(
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: dBlue),
-              ),
-              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
