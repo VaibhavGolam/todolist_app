@@ -76,8 +76,6 @@ class _HomeState extends State<Home> {
   Future<void> _saveThemeMode(ThemeData theme) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('themeBrightness', theme.brightness.index);
-    // Add other theme attributes that you want to save here
-    // Example: Save primaryColor, accentColor, etc.
   }
 
 //store todos in local storage
