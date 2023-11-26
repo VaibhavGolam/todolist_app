@@ -5,7 +5,6 @@ class ToDo {
   String? todoText;
   bool isDone;
 
-//push github
   // Method to convert ToDo object to a map
   Map<String, dynamic> toMap() {
     return {
